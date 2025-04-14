@@ -5,6 +5,27 @@ import os        # Used for checking if the wallet file already exists
 # Define the name of the file where we'll store wallets
 WALLET_FILE = "wallets.json"
 
+#Main Menu 
+def main_menu():
+    while True:
+        print("1. Add Wallet")
+        print("2. View Wallets")
+        print("3. Remove Wallet")
+        print("4. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            add_wallet()
+        elif choice == "2":
+            view_wallets()
+        elif choice == "3":
+            remove_wallet()
+        elif choice == "4":
+            break
+        else:
+            print("Invalid choice, please try again.")
+
 # Define a function that adds a wallet
 def add_wallet():
     # Check if the wallet file already exists
@@ -45,6 +66,52 @@ def add_wallet():
     # Confirm it worked
     print(f"Wallet '{name}' saved successfully!")
 
-# This ensures the function runs only if the script is executed directly
+#View Wallets
+def view_wallets():
+    # Check if the wallet file exists
+    if not os.path.exists(WALLET_FILE):
+        print("No wallets found.")
+        return
+
+    # Load the existing wallets
+    with open(WALLET_FILE, "r") as file:
+        wallets = json.load(file)
+
+    # Print each wallet's name and address
+    for entry in wallets:
+        print(f"Name: {entry['name']}, Address: {entry['address']}")
+#Define a function that removes a wallet by name and address
+def remove_wallet():
+    # Check if the wallet file exists
+    if not os.path.exists(WALLET_FILE):
+        print("No wallets found.")
+        return
+
+    # Load the existing wallets
+    with open(WALLET_FILE, "r") as file:
+        wallets = json.load(file)
+
+    # Ask the user for the name of the wallet to remove
+    name = input("Enter the name of the wallet to remove: ").strip()
+
+    # Ask for the address of the wallet to remove
+    address = input("Enter the address of the wallet to remove: ").strip()
+
+    # Find and remove the wallet entry
+    for entry in wallets:
+        if entry["name"] == name and entry["address"] == address:
+            wallets.remove(entry)
+            break
+    else:
+        print("Wallet not found.")
+        return
+
+    # Save the updated list back to the JSON file
+    with open(WALLET_FILE, "w") as file:
+        json.dump(wallets, file, indent=4)
+
+    print(f"Wallet '{name}' removed successfully!")
+
+# This ensures the menu runs only if the script is executed directly
 if __name__ == "__main__":
-    add_wallet()
+    main_menu()
